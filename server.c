@@ -5,6 +5,8 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <iostream>
+#include <fstream>
 
 void tcp_server(){
 	//创建套接字
@@ -13,7 +15,7 @@ void tcp_server(){
     struct sockaddr_in serv_addr;
     memset(&serv_addr, 0, sizeof(serv_addr));  //每个字节都用0填充
     serv_addr.sin_family = AF_INET;  //使用IPv4地址
-    serv_addr.sin_addr.s_addr = inet_addr("192.168.1.114");  //具体的IP地址
+    serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");  //具体的IP地址
     serv_addr.sin_port = htons(1234);  //端口
     bind(serv_sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
     //进入监听状态，等待用户发起请求
@@ -26,9 +28,17 @@ void tcp_server(){
 	    socklen_t clnt_addr_size = sizeof(clnt_addr);
 	    int clnt_sock = accept(serv_sock, (struct sockaddr*)&clnt_addr, &clnt_addr_size);
 	    //向客户端发送数据
-	    char str[] = "Hello, my name is Strike!";
-	    write(clnt_sock, str, sizeof(str));
-   		close(clnt_sock);
+	    // char str[] = "Hello, my name is Strike!";
+	    // write(clnt_sock, str, sizeof(str));
+   		// close(clnt_sock);
+        char buffer[40];
+        read(clnt_sock, buffer, sizeof(buffer)-1);  
+        printf("%s\n",buffer);
+        char str[40];
+        strcpy(str, buffer);
+        write(clnt_sock, str, sizeof(str));
+        //close(clnt_sock);
+        close(clnt_sock);
     }   	   
     //关闭套接字
     close(serv_sock);
@@ -36,7 +46,7 @@ void tcp_server(){
 }
 
 int main(){
-    daemon(0, 0);
+    //daemon(0, 0);
     tcp_server();
     return 0;
 }
