@@ -36,7 +36,7 @@ void tcp_server(){
         printf("%s\n",buffer);
         char str[40];
         strcpy(str, buffer);
-        write(clnt_sock, str, sizeof(str));
+        write(clnt_sock, str, strlen(str));
         //close(clnt_sock);
         close(clnt_sock);
     }   	   
